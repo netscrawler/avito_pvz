@@ -1,0 +1,3 @@
+[submodule "pvz_proto"]
+	path = pvz_proto
+	url = https://github.com/netscrawler/pvz_api

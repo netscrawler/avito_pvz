@@ -1,0 +1,19 @@
+db:
+  type: postgres
+  port: 5432
+  host: db
+  user: user
+  password: password
+  name: pvz
+  sslMode: disable
+  poolMaxConn: 20
+  poolMaxConnLifetime: 1h30m
+
+grpcServer:
+  port: 3000
+  timeout: 4s
+
+httpServer:
+  address: localhost:8080
+  timeout: 4s
+  idleTimeout: 60s
