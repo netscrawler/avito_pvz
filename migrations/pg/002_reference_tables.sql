@@ -1,0 +1,19 @@
+CREATE TABLE roles (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE cities (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE product_types (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE intake_statuses (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL
+);
