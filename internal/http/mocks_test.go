@@ -322,23 +322,23 @@ func (_c *MockPVZProvider_Create_Call) RunAndReturn(run func(ctx context.Context
 }
 
 // List provides a mock function for the type MockPVZProvider
-func (_mock *MockPVZProvider) List(ctx context.Context, params domain.Params) (*domain.PVZAgregate, error) {
+func (_mock *MockPVZProvider) List(ctx context.Context, params domain.Params) (*[]domain.PVZAgregate, error) {
 	ret := _mock.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
-	var r0 *domain.PVZAgregate
+	var r0 *[]domain.PVZAgregate
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.Params) (*domain.PVZAgregate, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.Params) (*[]domain.PVZAgregate, error)); ok {
 		return returnFunc(ctx, params)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.Params) *domain.PVZAgregate); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, domain.Params) *[]domain.PVZAgregate); ok {
 		r0 = returnFunc(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*domain.PVZAgregate)
+			r0 = ret.Get(0).(*[]domain.PVZAgregate)
 		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context, domain.Params) error); ok {
@@ -368,12 +368,12 @@ func (_c *MockPVZProvider_List_Call) Run(run func(ctx context.Context, params do
 	return _c
 }
 
-func (_c *MockPVZProvider_List_Call) Return(pVZAgregate *domain.PVZAgregate, err error) *MockPVZProvider_List_Call {
-	_c.Call.Return(pVZAgregate, err)
+func (_c *MockPVZProvider_List_Call) Return(pVZAgregates *[]domain.PVZAgregate, err error) *MockPVZProvider_List_Call {
+	_c.Call.Return(pVZAgregates, err)
 	return _c
 }
 
-func (_c *MockPVZProvider_List_Call) RunAndReturn(run func(ctx context.Context, params domain.Params) (*domain.PVZAgregate, error)) *MockPVZProvider_List_Call {
+func (_c *MockPVZProvider_List_Call) RunAndReturn(run func(ctx context.Context, params domain.Params) (*[]domain.PVZAgregate, error)) *MockPVZProvider_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

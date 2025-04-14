@@ -41,7 +41,7 @@ func New(ctx context.Context, cfg config.Config, log *slog.Logger) *App {
 		productService,
 	)
 
-	httpPvz := httpapp.NewApp(hndler)
+	httpPvz := httpapp.NewApp(hndler, log)
 
 	grpcPVZ := grpcapp.New(log, pvzService, cfg.GRPC.Port)
 

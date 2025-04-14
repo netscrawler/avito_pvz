@@ -3,12 +3,14 @@ package httpapp
 import (
 	"context"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	httpserver "avito_pvz/internal/http"
 	"avito_pvz/internal/http/gen"
 )
 
@@ -18,25 +20,33 @@ type App struct {
 }
 
 // NewApp создает экземпляр App с зависимостями и handler'ом
-func NewApp(handler gen.StrictServerInterface) *App {
+func NewApp(handler gen.StrictServerInterface, log *slog.Logger) *App {
 	// Swagger schema (для валидации запросов и регистрации роутов)
 	swagger, err := gen.GetSwagger()
 	if err != nil {
-		log.Fatalf("failed to load swagger spec: %v", err)
+		panic("err")
 	}
-	swagger.Servers = nil // не проверяем server.url в схеме
 
-	// Генерация handler'а
+	swagger.Servers = nil
 	openapiHandler := gen.NewStrictHandler(handler, nil)
 
-	// Роутинг через стандартную библиотеку
-	mux := http.NewServeMux()
-	gen.HandlerFromMux(openapiHandler, mux)
+	exceptPaths := map[string]bool{
+		"/register":   true,
+		"/login":      true,
+		"/dummyLogin": true,
+	}
 
-	// Конфигурация http.Server
+	middlewareChain := httpserver.LoggingMiddleware(log)(
+		httpserver.AuthMiddleware(exceptPaths)(
+			httpserver.TracingMiddleware(
+				gen.HandlerFromMux(openapiHandler, http.NewServeMux()),
+			),
+		),
+	)
+
 	srv := &http.Server{
 		Addr:              ":8080",
-		Handler:           mux,
+		Handler:           middlewareChain,
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 
@@ -45,7 +55,6 @@ func NewApp(handler gen.StrictServerInterface) *App {
 	}
 }
 
-// Run запускает сервер и включает graceful shutdown
 func (app *App) Run() {
 	// Канал для остановки
 	stopCh := make(chan os.Signal, 1)
@@ -59,7 +68,6 @@ func (app *App) Run() {
 		}
 	}()
 
-	// Ожидаем сигнала для остановки
 	<-stopCh
 	log.Println("Received shutdown signal, gracefully shutting down...")
 
