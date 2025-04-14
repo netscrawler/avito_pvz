@@ -9,6 +9,7 @@ linters:
     - godox
     - varnamelen
     - wrapcheck
+    - funlen
   settings:
     revive:
       severity: warning
@@ -23,22 +24,27 @@ linters:
       - legacy
       - std-error-handling
     paths:
+      - _test.go$
+      - .gen.go$
       - third_party$
       - builtin$
       - examples$
+      - gen$
 formatters:
   enable:
-    - gci
-    - gofmt
+    - golines
     - gofumpt
     - goimports
-    - golines
   settings:
     gofmt:
       simplify: true
+    gofumt:
+      extra-rules: true
   exclusions:
     generated: lax
     paths:
       - third_party$
       - builtin$
       - examples$
+      - gen$
+      - .gen.go$

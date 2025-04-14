@@ -1,0 +1,18 @@
+version: "3"
+
+tasks:
+  # Задача для генерации типов и серверных хендлеров из OpenAPI спецификации
+  gen:
+    desc: "oapi-codegen"
+    cmds:
+      - go tool oapi-codegen -generate types -o internal/models/dto/types.gen.go -package dto api/swagger.yaml
+      - go tool oapi-codegen -generate server -o internal/http/server/server.gen.go -package server api/swagger.yaml
+      - go tool oapi-codegen -generate spec -o internal/api/spec.gen.go -package api api/swagger.yaml
+
+  # Задача для очистки сгенерированных файлов
+  clean:
+    desc: "Очистка сгенерированных файлов"
+    cmds:
+      - rm -f internal/models/dto/types.gen.go
+      - rm -f internal/http/server/server.gen.go
+      - rm -f internal/api/spec.gen.go

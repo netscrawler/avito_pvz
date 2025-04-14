@@ -17,10 +17,11 @@ FROM gcr.io/distroless/static-debian12
 
 WORKDIR /pvz
 
-COPY --from=builder /app/auth .
+COPY --from=builder /app/pvz .
 
-COPY --from=builder /app/config ./config
+COPY --from=builder /app/config/config.local.docker.yaml ./config/
 
-EXPOSE 54821
+EXPOSE 8080
+EXPOSE 3000
 
 CMD ["./pvz"]

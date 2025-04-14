@@ -2,6 +2,8 @@ package config
 
 import (
 	"flag"
+	"fmt"
+	"net/url"
 	"os"
 	"time"
 
@@ -9,12 +11,19 @@ import (
 )
 
 type Config struct {
-	DB         dBConfig `yaml:"db"`
-	GRPCServer `         yaml:"grpcServer"`
-	HTTPServer `         yaml:"httpServer"`
+	ENV  string     `yaml:"env"`
+	DB   DBConfig   `yaml:"db"`
+	GRPC GRPCServer `yaml:"grpcServer"`
+	HTTP HTTPServer `yaml:"httpServer"`
+	JWT  JWT        `yaml:"jwt"`
 }
 
-type dBConfig struct {
+type JWT struct {
+	SecretKey string        `yaml:"secretKey"`
+	Expire    time.Duration `yaml:"expire"`
+}
+
+type DBConfig struct {
 	Type                string        `yaml:"type"                env-default:"postgres"`
 	Port                int           `yaml:"port"                env-default:"5432"`
 	Host                string        `yaml:"host"                env-default:"localhost"`
@@ -74,4 +83,21 @@ func fetchConfigPath() string {
 	}
 
 	return res
+}
+
+func (db *DBConfig) DSN() string {
+	encodedPassword := url.QueryEscape(db.Password)
+
+	return fmt.Sprintf(
+		"%s://%s:%s@%s:%d/%s?sslmode=%s&pool_max_conns=%d&pool_max_conn_lifetime=%s",
+		db.Type,
+		db.User,
+		encodedPassword,
+		db.Host,
+		db.Port,
+		db.Name,
+		db.SSLMode,
+		db.PoolMaxConn,
+		db.PoolMaxConnLifetime.String(),
+	)
 }

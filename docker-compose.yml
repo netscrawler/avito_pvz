@@ -3,9 +3,10 @@ services:
     build: .
     container_name: avito_pvz
     ports:
-      - "54821:54821"
+      - "8080:8080"
+      - "3000:3000"
     environment:
-      - CONFIG_PATH=config/config.local.yaml
+      - CONFIG_PATH=config/config.local.docker.yaml
     depends_on:
       db:
         condition: service_healthy
