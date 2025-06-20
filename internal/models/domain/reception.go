@@ -1,9 +1,8 @@
 package domain
 
 import (
-	"time"
-
 	"avito_pvz/internal/http/gen"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/oapi-codegen/runtime/types"

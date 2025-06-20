@@ -1,11 +1,10 @@
 package service
 
 import (
-	"context"
-	"errors"
-
 	"avito_pvz/internal/models"
 	"avito_pvz/internal/models/domain"
+	"context"
+	"errors"
 )
 
 type PVZProvider interface {
@@ -33,6 +32,7 @@ func (p *PVZ) GetAllPVZ(ctx context.Context) (domain.PVZList, error) {
 	for _, v := range pvzs {
 		out = append(out, &v)
 	}
+
 	return out, nil
 }
 

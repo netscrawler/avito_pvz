@@ -2,10 +2,9 @@
 package httpserver
 
 import (
-	"context"
-
 	"avito_pvz/internal/http/gen"
 	"avito_pvz/internal/models/domain"
+	"context"
 
 	"github.com/oapi-codegen/runtime/types"
 )
@@ -47,8 +46,7 @@ type Server struct {
 	product   ProductProvider
 }
 
-// Получение тестового токена
-// (POST /dummyLogin)
+// (POST /dummyLogin).
 func (s *Server) PostDummyLogin(
 	ctx context.Context,
 	request gen.PostDummyLoginRequestObject,
@@ -68,17 +66,17 @@ func (s *Server) PostDummyLogin(
 	}
 
 	response := gen.PostDummyLogin200JSONResponse(token)
-	return response, nil
 
+	return response, nil
 }
 
-// Авторизация пользователя
-// (POST /login)
+// (POST /login).
 func (s *Server) PostLogin(
 	ctx context.Context,
 	request gen.PostLoginRequestObject,
 ) (gen.PostLoginResponseObject, error) {
 	email, password := request.Body.Email, request.Body.Password
+
 	token, err := s.user.Auth(ctx, string(email), password)
 	if err != nil {
 		return gen.PostLogin401JSONResponse{
@@ -91,8 +89,7 @@ func (s *Server) PostLogin(
 	return resp, nil
 }
 
-// Добавление товара в текущую приемку (только для сотрудников ПВЗ)
-// (POST /products)
+// (POST /products).
 func (s *Server) PostProducts(
 	ctx context.Context,
 	request gen.PostProductsRequestObject,
@@ -117,11 +114,9 @@ func (s *Server) PostProducts(
 		ReceptionId: product.ReceptionID,
 		Type:        gen.ProductType(product.Type),
 	}, nil
-
 }
 
-// Получение списка ПВЗ с фильтрацией по дате приемки и пагинацией
-// (GET /pvz)
+// (GET /pvz).
 func (s *Server) GetPvz(
 	ctx context.Context,
 	request gen.GetPvzRequestObject,
@@ -138,8 +133,7 @@ func (s *Server) GetPvz(
 	return gen.GetPvz200JSONResponse(resp), nil
 }
 
-// Создание ПВЗ (только для модераторов)
-// (POST /pvz)
+// (POST /pvz).
 func (s *Server) PostPvz(
 	ctx context.Context,
 	request gen.PostPvzRequestObject,
@@ -160,8 +154,7 @@ func (s *Server) PostPvz(
 	}, nil
 }
 
-// Закрытие последней открытой приемки товаров в рамках ПВЗ
-// (POST /pvz/{pvzId}/close_last_reception)
+// (POST /pvz/{pvzId}/close_last_reception).
 func (s *Server) PostPvzPvzIdCloseLastReception(
 	ctx context.Context,
 	request gen.PostPvzPvzIdCloseLastReceptionRequestObject,
@@ -174,13 +167,13 @@ func (s *Server) PostPvzPvzIdCloseLastReception(
 			Message: err.Error(),
 		}, err
 	}
+
 	r := rec.ToDTO()
 
 	return gen.PostPvzPvzIdCloseLastReception200JSONResponse(r), nil
 }
 
-// Удаление последнего добавленного товара из текущей приемки (LIFO, только для сотрудников ПВЗ)
-// (POST /pvz/{pvzId}/delete_last_product)
+// (POST /pvz/{pvzId}/delete_last_product).
 func (s *Server) PostPvzPvzIdDeleteLastProduct(
 	ctx context.Context,
 	request gen.PostPvzPvzIdDeleteLastProductRequestObject,
@@ -197,8 +190,7 @@ func (s *Server) PostPvzPvzIdDeleteLastProduct(
 	return gen.PostPvzPvzIdDeleteLastProduct200Response{}, nil
 }
 
-// Создание новой приемки товаров (только для сотрудников ПВЗ)
-// (POST /receptions)
+// (POST /receptions).
 func (s *Server) PostReceptions(
 	ctx context.Context,
 	request gen.PostReceptionsRequestObject,
@@ -215,8 +207,7 @@ func (s *Server) PostReceptions(
 	return gen.PostReceptions201JSONResponse(rec.ToDTO()), nil
 }
 
-// Регистрация пользователя
-// (POST /register)
+// (POST /register).
 func (s *Server) PostRegister(
 	ctx context.Context,
 	request gen.PostRegisterRequestObject,

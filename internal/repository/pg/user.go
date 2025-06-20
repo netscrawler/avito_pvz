@@ -1,11 +1,11 @@
 package pgrepo
 
 import (
+	"avito_pvz/internal/models/domain"
 	"context"
 	"errors"
 	"fmt"
 
-	"avito_pvz/internal/models/domain"
 	postgres "avito_pvz/internal/storage/pg"
 
 	"github.com/Masterminds/squirrel"
@@ -40,6 +40,7 @@ func (p *pgUser) GetByEmail(ctx context.Context, email string) (*domain.User, er
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, domain.ErrNotFound
 		}
+
 		return nil, fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 	}
 
@@ -63,6 +64,7 @@ func (p *pgUser) Create(ctx context.Context, user *domain.User) error {
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
 			return domain.ErrAlreadyExists
 		}
+
 		return fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 	}
 

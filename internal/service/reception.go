@@ -1,11 +1,10 @@
 package service
 
 import (
-	"context"
-	"errors"
-
 	"avito_pvz/internal/models"
 	"avito_pvz/internal/models/domain"
+	"context"
+	"errors"
 
 	"github.com/google/uuid"
 )
@@ -50,6 +49,7 @@ func (r *Reception) CloseLastReception(
 	if err != nil {
 		return nil, models.ErrInternal
 	}
+
 	reception.Close()
 
 	return reception, nil
@@ -69,6 +69,7 @@ func (r *Reception) Create(ctx context.Context, pvzID domain.PVZID) (*domain.Rec
 	if oldReception != nil && oldReception.IsActive() {
 		return nil, models.ErrReceptionAlreadyExist
 	}
+
 	if err != nil && !errors.Is(err, domain.ErrNotFound) {
 		return nil, models.ErrInternal
 	}
@@ -79,6 +80,7 @@ func (r *Reception) Create(ctx context.Context, pvzID domain.PVZID) (*domain.Rec
 	if err != nil {
 		return nil, models.ErrInternal
 	}
+
 	return reception, nil
 }
 

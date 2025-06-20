@@ -1,11 +1,11 @@
 package pgrepo
 
 import (
+	"avito_pvz/internal/models/domain"
 	"context"
 	"errors"
 	"fmt"
 
-	"avito_pvz/internal/models/domain"
 	postgres "avito_pvz/internal/storage/pg"
 
 	"github.com/Masterminds/squirrel"
@@ -64,6 +64,7 @@ func (p *pgReception) GetLast(ctx context.Context, pvz uuid.UUID) (*domain.Recep
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, domain.ErrNotFound
 		}
+
 		return nil, fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 	}
 

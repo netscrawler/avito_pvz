@@ -1,9 +1,8 @@
 package domain
 
 import (
-	"time"
-
 	"avito_pvz/internal/http/gen"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/oapi-codegen/runtime/types"
@@ -17,6 +16,7 @@ const (
 
 func NewPVZ(city PvzCity) *PVZ {
 	uid := uuid.New()
+
 	return &PVZ{
 		ID:               (*PVZID)(&uid),
 		City:             city,
@@ -116,6 +116,7 @@ func convertToGenProducts(products *[]Product) []gen.Product {
 			genProducts[i] = product.ToDto()
 		}
 	}
+
 	return genProducts
 }
 

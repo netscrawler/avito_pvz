@@ -1,16 +1,19 @@
 package app
 
 import (
+	"avito_pvz/internal/config"
+	"avito_pvz/internal/repository"
+	"avito_pvz/internal/service"
 	"context"
 	"log/slog"
 
 	grpcapp "avito_pvz/internal/app/grpc"
 	httpapp "avito_pvz/internal/app/http"
-	"avito_pvz/internal/config"
+
 	httpserver "avito_pvz/internal/http"
-	"avito_pvz/internal/repository"
+
 	pgrepo "avito_pvz/internal/repository/pg"
-	"avito_pvz/internal/service"
+
 	postgres "avito_pvz/internal/storage/pg"
 )
 

@@ -31,6 +31,7 @@ type User struct {
 
 func HashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
 	return string(hash), err
 }
 
@@ -43,13 +44,16 @@ func NewUser(email string, password string, role string) (*User, error) {
 	if err != nil {
 		return nil, ErrInvalidEmail
 	}
+
 	passwordHash, err := HashPassword(password)
 	if err != nil {
 		return nil, ErrInternal
 	}
+
 	if role != string(RoleModerator) && role != string(RoleEmploye) {
 		return nil, ErrInvalidRole
 	}
+
 	return &User{
 		ID:           uuid.New(),
 		Email:        email,

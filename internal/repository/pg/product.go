@@ -1,11 +1,11 @@
 package pgrepo
 
 import (
+	"avito_pvz/internal/models/domain"
 	"context"
 	"errors"
 	"fmt"
 
-	"avito_pvz/internal/models/domain"
 	postgres "avito_pvz/internal/storage/pg"
 
 	"github.com/Masterminds/squirrel"
@@ -31,12 +31,12 @@ func (p *pgProduct) Create(ctx context.Context, product *domain.Product) error {
 		Suffix("RETURNING id, created_at").
 		ToSql()
 	if err != nil {
-		return fmt.Errorf("%w: %v", domain.ErrInternal, err)
+		return fmt.Errorf("%w: %w", domain.ErrInternal, err)
 	}
 
 	row := p.db.DB.QueryRow(ctx, query, args...)
 	if err := row.Scan(&product.ID, &product.CreatedAt); err != nil {
-		return fmt.Errorf("%w: %v", domain.ErrInternal, err)
+		return fmt.Errorf("%w: %w", domain.ErrInternal, err)
 	}
 
 	return nil
@@ -51,7 +51,7 @@ func (p *pgProduct) GetLast(ctx context.Context, receptionID uuid.UUID) (*domain
 		Limit(1).
 		ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("%w: %v", domain.ErrInternal, err)
+		return nil, fmt.Errorf("%w: %w", domain.ErrInternal, err)
 	}
 
 	row := p.db.DB.QueryRow(ctx, query, args...)
@@ -61,7 +61,8 @@ func (p *pgProduct) GetLast(ctx context.Context, receptionID uuid.UUID) (*domain
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, domain.ErrNotFound
 		}
-		return nil, fmt.Errorf("%w: %v", domain.ErrInternal, err)
+
+		return nil, fmt.Errorf("%w: %w", domain.ErrInternal, err)
 	}
 
 	return &product, nil
@@ -73,12 +74,12 @@ func (p *pgProduct) Delete(ctx context.Context, product *domain.Product) error {
 		Where(squirrel.Eq{"id": product.ID}).
 		ToSql()
 	if err != nil {
-		return fmt.Errorf("%w: %v", domain.ErrInternal, err)
+		return fmt.Errorf("%w: %w", domain.ErrInternal, err)
 	}
 
 	_, err = p.db.DB.Exec(ctx, query, args...)
 	if err != nil {
-		return fmt.Errorf("%w: %v", domain.ErrInternal, err)
+		return fmt.Errorf("%w: %w", domain.ErrInternal, err)
 	}
 
 	return nil

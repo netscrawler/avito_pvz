@@ -1,11 +1,10 @@
 package service
 
 import (
-	"context"
-	"errors"
-
 	"avito_pvz/internal/models"
 	"avito_pvz/internal/models/domain"
+	"context"
+	"errors"
 )
 
 type JWTGenerator interface {

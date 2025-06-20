@@ -1,11 +1,11 @@
 package pgrepo
 
 import (
+	"avito_pvz/internal/models/domain"
 	"context"
 	"errors"
 	"fmt"
 
-	"avito_pvz/internal/models/domain"
 	postgres "avito_pvz/internal/storage/pg"
 
 	"github.com/Masterminds/squirrel"
@@ -55,6 +55,7 @@ func (p *pgPvz) GetAll(ctx context.Context) ([]domain.PVZ, error) {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, domain.ErrNotFound
 		}
+
 		return nil, fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 	}
 
@@ -66,6 +67,7 @@ func (p *pgPvz) GetAll(ctx context.Context) ([]domain.PVZ, error) {
 			// TODO: add log
 			continue
 		}
+
 		list = append(list, pvz)
 	}
 
@@ -129,12 +131,15 @@ func (p *pgPvz) Exist(ctx context.Context, pvz uuid.UUID) error {
 	}
 
 	row := p.storage.DB.QueryRow(ctx, query, args...)
+
 	var pvztst domain.PVZ
+
 	err = row.Scan(&pvztst.ID, &pvztst.City, &pvztst.RegistrationDate)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return domain.ErrNotFound
 		}
+
 		return fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 	}
 
@@ -153,6 +158,7 @@ func (p *pgPvz) GetWithParam(
 	if params.StartDate != nil {
 		qb = qb.Where(squirrel.GtOrEq{"pvzs.created_at": *params.StartDate})
 	}
+
 	if params.EndDate != nil {
 		qb = qb.Where(squirrel.LtOrEq{"pvzs.created_at": *params.EndDate})
 	}
@@ -160,6 +166,7 @@ func (p *pgPvz) GetWithParam(
 	if params.Limit != nil {
 		qb = qb.Limit(uint64(*params.Limit))
 	}
+
 	if params.Page != nil && params.Limit != nil {
 		offset := (*params.Page - 1) * (*params.Limit)
 		qb = qb.Offset(uint64(offset))
@@ -176,21 +183,25 @@ func (p *pgPvz) GetWithParam(
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, domain.ErrNotFound
 		}
+
 		return nil, fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 	}
 	defer rows.Close()
 
 	var pvzs []domain.PVZ
+
 	for rows.Next() {
 		var pvz domain.PVZ
 		if err := rows.Scan(&pvz.ID, &pvz.City, &pvz.RegistrationDate); err != nil {
 			return nil, fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 		}
+
 		pvzs = append(pvzs, pvz)
 	}
 
 	// Теперь получаем данные о приемках и продуктах для каждого ПВЗ
 	var result []domain.PVZAgregate
+
 	for _, pvz := range pvzs {
 		// Получаем приемки для каждого ПВЗ
 		receptions, err := p.getReceptionsByPVZID(ctx, pvz.ID.String())
@@ -203,6 +214,7 @@ func (p *pgPvz) GetWithParam(
 			Products  *[]domain.Product
 			Reception *domain.Reception
 		}
+
 		for _, reception := range receptions {
 			products, err := p.getProductsByReceptionID(ctx, reception.ID.String())
 			if err != nil {
@@ -227,7 +239,7 @@ func (p *pgPvz) GetWithParam(
 	return result, nil
 }
 
-// getReceptionsByPVZID выполняет запрос для получения приемок по идентификатору ПВЗ с использованием squirrel
+// getReceptionsByPVZID выполняет запрос для получения приемок по идентификатору ПВЗ с использованием squirrel.
 func (p *pgPvz) getReceptionsByPVZID(
 	ctx context.Context,
 	pvzID string,
@@ -249,18 +261,20 @@ func (p *pgPvz) getReceptionsByPVZID(
 	defer rows.Close()
 
 	var receptions []domain.Reception
+
 	for rows.Next() {
 		var reception domain.Reception
 		if err := rows.Scan(&reception.ID, &reception.PvzID, &reception.Status, &reception.CreatedAt); err != nil {
 			return nil, fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 		}
+
 		receptions = append(receptions, reception)
 	}
 
 	return receptions, nil
 }
 
-// getProductsByReceptionID выполняет запрос для получения продуктов по идентификатору приемки с использованием squirrel
+// getProductsByReceptionID выполняет запрос для получения продуктов по идентификатору приемки с использованием squirrel.
 func (p *pgPvz) getProductsByReceptionID(
 	ctx context.Context,
 	receptionID string,
@@ -282,11 +296,13 @@ func (p *pgPvz) getProductsByReceptionID(
 	defer rows.Close()
 
 	var products []domain.Product
+
 	for rows.Next() {
 		var product domain.Product
 		if err := rows.Scan(&product.ID, &product.ReceptionID, &product.Type, &product.CreatedAt); err != nil {
 			return nil, fmt.Errorf("%w (%w)", domain.ErrInternal, err)
 		}
+
 		products = append(products, product)
 	}
 

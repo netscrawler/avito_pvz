@@ -1,11 +1,10 @@
 package pvzgrpc
 
 import (
-	"context"
-	"errors"
-
 	"avito_pvz/internal/models"
 	"avito_pvz/internal/models/domain"
+	"context"
+	"errors"
 
 	pvzv1 "github.com/netscrawler/pvz_proto/gen/go/pvz"
 	"google.golang.org/grpc"
@@ -36,6 +35,7 @@ func (s *serverAPI) GetPVZList(
 	if errors.Is(err, models.ErrPVZNotFound) {
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
+
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

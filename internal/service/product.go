@@ -1,11 +1,10 @@
 package service
 
 import (
-	"context"
-	"errors"
-
 	"avito_pvz/internal/models"
 	"avito_pvz/internal/models/domain"
+	"context"
+	"errors"
 
 	"github.com/google/uuid"
 )
@@ -62,6 +61,7 @@ func (p *Product) getActiveReceprion(
 	if errors.Is(err, domain.ErrPVZNotExist) {
 		return nil, models.ErrPVZNotFound
 	}
+
 	if err != nil {
 		return nil, models.ErrInternal
 	}

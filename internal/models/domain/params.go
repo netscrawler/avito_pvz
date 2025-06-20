@@ -1,9 +1,8 @@
 package domain
 
 import (
-	"time"
-
 	"avito_pvz/internal/http/gen"
+	"time"
 )
 
 type Params struct {

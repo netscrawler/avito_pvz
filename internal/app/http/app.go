@@ -1,7 +1,9 @@
 package httpapp
 
 import (
+	"avito_pvz/internal/http/gen"
 	"context"
+	"errors"
 	"log"
 	"log/slog"
 	"net/http"
@@ -11,15 +13,14 @@ import (
 	"time"
 
 	httpserver "avito_pvz/internal/http"
-	"avito_pvz/internal/http/gen"
 )
 
-// App структура, которая содержит http сервер
+// App структура, которая содержит http сервер.
 type App struct {
 	httpServer *http.Server
 }
 
-// NewApp создает экземпляр App с зависимостями и handler'ом
+// NewApp создает экземпляр App с зависимостями и handler'ом.
 func NewApp(handler gen.StrictServerInterface, log *slog.Logger) *App {
 	// Swagger schema (для валидации запросов и регистрации роутов)
 	swagger, err := gen.GetSwagger()
@@ -63,7 +64,9 @@ func (app *App) Run() {
 	// Запуск сервер в горутине
 	go func() {
 		log.Printf("Starting server on %s", app.httpServer.Addr)
-		if err := app.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+
+		if err := app.httpServer.ListenAndServe(); err != nil &&
+			!errors.Is(err, http.ErrServerClosed) {
 			log.Fatalf("server error: %v", err)
 		}
 	}()
@@ -79,5 +82,6 @@ func (app *App) Run() {
 	if err := app.httpServer.Shutdown(ctx); err != nil {
 		log.Fatalf("Shutdown failed: %v", err)
 	}
+
 	log.Println("Server gracefully stopped")
 }

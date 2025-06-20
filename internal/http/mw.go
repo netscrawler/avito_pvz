@@ -14,7 +14,7 @@ const (
 	loggerKey    = "logger"
 )
 
-// LoggingMiddleware creates a structured logger and adds it to the context
+// LoggingMiddleware creates a structured logger and adds it to the context.
 func LoggingMiddleware(logger *slog.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -52,12 +52,13 @@ func LoggingMiddleware(logger *slog.Logger) func(http.Handler) http.Handler {
 	}
 }
 
-// AuthMiddleware checks for valid JWT token in Authorization header
+// AuthMiddleware checks for valid JWT token in Authorization header.
 func AuthMiddleware(exceptPaths map[string]bool) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if exceptPaths[r.URL.Path] {
 				next.ServeHTTP(w, r)
+
 				return
 			}
 
@@ -70,6 +71,7 @@ func AuthMiddleware(exceptPaths map[string]bool) func(http.Handler) http.Handler
 			if token == "" {
 				logger.Error("missing authorization token")
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+
 				return
 			}
 
@@ -81,7 +83,7 @@ func AuthMiddleware(exceptPaths map[string]bool) func(http.Handler) http.Handler
 	}
 }
 
-// TracingMiddleware adds tracing context to the request
+// TracingMiddleware adds tracing context to the request.
 func TracingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Get or create request ID
@@ -98,7 +100,7 @@ func TracingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// responseWriter is a custom response writer to capture status code
+// responseWriter is a custom response writer to capture status code.
 type responseWriter struct {
 	http.ResponseWriter
 	statusCode int

@@ -43,5 +43,6 @@ func FromCtx(ctx context.Context) *slog.Logger {
 	if !ok {
 		return baseLogger
 	}
+
 	return log
 }
